@@ -1,0 +1,6 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://dmld04888jsin"]
+
+[resource]
+albedo_color = Color(0.2668124, 0.58440083, 0.3995751, 1)
+ao_enabled = true
+ao_light_affect = 0.19
