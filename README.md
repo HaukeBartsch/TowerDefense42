@@ -2,6 +2,8 @@
 
 A rectangular arena with tower positions on the arena border. Enemies are moving across the arena using billiard ball physics.
 
+[Link to Game Page](https://haukebartsch.github.io/TowerDefense42/)
+
 
 ## How to start the project with claude code?
 
