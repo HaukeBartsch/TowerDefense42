@@ -25,10 +25,11 @@ func _ready():
 	var mat = preload("res://materials/tower.tres")
 	mesh_instance.material_override = mat
 	add_child(mesh_instance)
+	self.name = "Tower"
 
 	game_manager = get_tree().get_root().get_node_or_null("GameManager")
 
-func _process(delta: float):
+func _process(_delta: float):
 	if not is_active or not game_manager or game_manager.game_state != "playing":
 		return
 

@@ -18,6 +18,7 @@ var game_manager: GameManager = null
 # Visual components
 var mesh_instance: MeshInstance3D
 var health_bar: Control
+var rigid_body: RigidBody3D
 
 func _ready():
 	# Create mesh for enemy (simple sphere)
@@ -27,22 +28,30 @@ func _ready():
 	sphere_mesh.height = 20.0
 	mesh_instance.mesh = sphere_mesh
 	mesh_instance.name = "enemy"
+	self.name = "Enemy"
 	
 	var mat = preload("res://materials/enemy.tres")
 	mesh_instance.material_override = mat
 	add_child(mesh_instance)
 
+	# add a sphere 
+	rigid_body = RigidBody3D.new()
+	rigid_body.gravity_scale = 0.0
+	add_child(rigid_body)
+	rigid_body.scale *= 20 # Vector3(20,20,20)
+	
 	# Create health bar UI
 	health_bar = _create_health_bar()
 	health_bar.name = "Health Bar"
-	add_sibling(health_bar)
+	add_child(health_bar)
 
 func _process(delta):
 	if not game_manager or game_manager.game_state != "playing":
 		return
 
 	# Straight-line billiard motion + reflection
-	global_position += velocity * speed * delta
+	# global_position += velocity * speed * delta
+	rigid_body.scale = Vector3(20,20,20)
 
 	var min_bound = game_manager.ARENA_MIN
 	var max_bound = game_manager.ARENA_MAX
@@ -50,16 +59,28 @@ func _process(delta):
 	if global_position.x < min_bound.x:
 		global_position.x = min_bound.x
 		velocity.x = -velocity.x
+		self.rigid_body.linear_velocity.x = -self.rigid_body.linear_velocity.x
 	elif global_position.x > max_bound.x:
 		global_position.x = max_bound.x
 		velocity.x = -velocity.x
+		self.rigid_body.linear_velocity.x = -self.rigid_body.linear_velocity.x
 
 	if global_position.z < min_bound.z:
 		global_position.z = min_bound.z
 		velocity.z = -velocity.z
+		self.rigid_body.linear_velocity.z = -self.rigid_body.linear_velocity.z
 	elif global_position.z > max_bound.z:
 		global_position.z = max_bound.z
 		velocity.z = -velocity.z
+		self.rigid_body.linear_velocity.z = -self.rigid_body.linear_velocity.z
+	
+	if self.rigid_body:
+		if self.rigid_body.linear_velocity.length() < velocity.length():
+			self.rigid_body.add_constant_force(velocity * delta * rigid_body.mass)
+		var keep_y = global_position.y
+		global_position += self.rigid_body.linear_velocity * speed * delta
+		global_position.y = keep_y
+
 
 func _create_health_bar() -> Control:
 	var panel = Panel.new()

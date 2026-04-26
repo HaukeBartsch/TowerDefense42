@@ -41,7 +41,7 @@ func _on_wave_started(wave_num: int) -> void:
 	if wave_label:
 		wave_label.text = "Wave: %d" % wave_num
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if not game_manager:
 		return
 

@@ -88,6 +88,7 @@ func spawn_enemy() -> Node3D:
 	if is_wave_active and current_wave_enemy_index < wave_enemies.size():
 		var enemy_scene = preload("res://enemy.tscn")
 		var enemy = enemy_scene.instantiate()
+		enemy.name = "Enemy"
 
 		# Spawn at a random location in the arena
 		var spawn_x = randf_range(ARENA_MIN.x, ARENA_MAX.x)
@@ -102,6 +103,8 @@ func spawn_enemy() -> Node3D:
 		# Random direction for billiard motion
 		var angle = randf() * TAU
 		enemy.velocity = Vector3(cos(angle), 0, sin(angle)).normalized()
+		if enemy.rigid_body:
+			enemy.rigid_body.velocity = enemy.velocity
 
 		add_child(enemy)
 		enemies.append(enemy)
