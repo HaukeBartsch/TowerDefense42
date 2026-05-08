@@ -77,7 +77,7 @@ func start_wave(wave_num: int) -> void:
 	for i in range(enemy_count):
 		wave_enemies.append({
 			"health": 80.0 + float(wave_num) * 8.0,
-			"speed": 6.0 + float(wave_num) * 0.4,
+			"speed": 6.0 + float(wave_num) * 0.8,
 			"reward": 20 + wave_num * 5
 		})
 

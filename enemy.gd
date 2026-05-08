@@ -39,7 +39,6 @@ func _ready():
 	mesh_instance.material_override = mat
 	add_child(mesh_instance)
 
-
 	# add a sphere 
 	rigid_body = CollisionShape3D.new() # RigidBody3D.new()
 	rigid_body.shape = sphere_mesh.create_convex_shape(true, true)

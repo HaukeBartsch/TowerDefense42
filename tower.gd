@@ -11,6 +11,7 @@ var target: Enemy = null
 # Tower state
 var is_active := true
 var game_manager: GameManager = null
+var rigid_body: CollisionShape3D
 
 func _ready():
 	# Create tower visual (cylinder)
@@ -26,6 +27,12 @@ func _ready():
 	mesh_instance.material_override = mat
 	add_child(mesh_instance)
 	self.name = "Tower"
+
+	# add a sphere 
+	rigid_body = CollisionShape3D.new() # RigidBody3D.new()
+	rigid_body.shape = cylinder_mesh.create_convex_shape(true, true)
+	#rigid_body.gravity_scale = 0.0
+	add_child(rigid_body)
 
 	game_manager = get_tree().get_root().get_node_or_null("GameManager")
 
