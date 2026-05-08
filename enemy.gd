@@ -1,4 +1,4 @@
-extends Node3D
+extends CharacterBody3D
 class_name Enemy
 
 # Enemy properties
@@ -7,10 +7,12 @@ var max_health: float = 100.0
 var speed := 200.0
 var reward := 25
 var damage := 10
+var mass := 1.0
 
 
 # Movement properties
-var velocity := Vector3.ZERO
+# set by the game_manager when a new enemy is spawned
+# var velocity := Vector3.ZERO
 
 # Game references
 var game_manager: GameManager = null
@@ -18,10 +20,13 @@ var game_manager: GameManager = null
 # Visual components
 var mesh_instance: MeshInstance3D
 var health_bar: Control
-var rigid_body: RigidBody3D
+var rigid_body: CollisionShape3D
 
 func _ready():
 	# Create mesh for enemy (simple sphere)
+	#self.gravity_scale = 0.0
+	#self.constant_force = Vector3(0.0,0.0,0.0)
+	#self.can_sleep = false
 	mesh_instance = MeshInstance3D.new()
 	var sphere_mesh = SphereMesh.new()
 	sphere_mesh.radius = 10.0
@@ -34,24 +39,27 @@ func _ready():
 	mesh_instance.material_override = mat
 	add_child(mesh_instance)
 
+
 	# add a sphere 
-	rigid_body = RigidBody3D.new()
-	rigid_body.gravity_scale = 0.0
+	rigid_body = CollisionShape3D.new() # RigidBody3D.new()
+	rigid_body.shape = sphere_mesh.create_convex_shape(true, true)
+	#rigid_body.gravity_scale = 0.0
 	add_child(rigid_body)
-	rigid_body.scale *= 20 # Vector3(20,20,20)
+	# rigid_body.scale *= 20 # Vector3(20,20,20)
+	# rigid_body.scale = Vector3(20,20,20)
 	
 	# Create health bar UI
 	health_bar = _create_health_bar()
 	health_bar.name = "Health Bar"
 	add_child(health_bar)
 
-func _process(delta):
+func _physics_process(delta):
 	if not game_manager or game_manager.game_state != "playing":
 		return
 
 	# Straight-line billiard motion + reflection
 	# global_position += velocity * speed * delta
-	rigid_body.scale = Vector3(20,20,20)
+	#rigid_body.scale = Vector3(20,20,20)
 
 	var min_bound = game_manager.ARENA_MIN
 	var max_bound = game_manager.ARENA_MAX
@@ -59,27 +67,52 @@ func _process(delta):
 	if global_position.x < min_bound.x:
 		global_position.x = min_bound.x
 		velocity.x = -velocity.x
-		self.rigid_body.linear_velocity.x = -self.rigid_body.linear_velocity.x
+		#self.velocity.x = -self.velocity.x
 	elif global_position.x > max_bound.x:
 		global_position.x = max_bound.x
 		velocity.x = -velocity.x
-		self.rigid_body.linear_velocity.x = -self.rigid_body.linear_velocity.x
+		#self.velocity.x = -self.velocity.x
 
 	if global_position.z < min_bound.z:
 		global_position.z = min_bound.z
 		velocity.z = -velocity.z
-		self.rigid_body.linear_velocity.z = -self.rigid_body.linear_velocity.z
+		#self.velocity.z = -self.velocity.z
 	elif global_position.z > max_bound.z:
 		global_position.z = max_bound.z
 		velocity.z = -velocity.z
-		self.rigid_body.linear_velocity.z = -self.rigid_body.linear_velocity.z
+		#self.velocity.z = -self.velocity.z
 	
-	if self.rigid_body:
-		if self.rigid_body.linear_velocity.length() < velocity.length():
-			self.rigid_body.add_constant_force(velocity * delta * rigid_body.mass)
-		var keep_y = global_position.y
-		global_position += self.rigid_body.linear_velocity * speed * delta
-		global_position.y = keep_y
+	#if velocity.length() < self.speed:
+	#	var constant_force = velocity.normalized() * self.mass
+	#	velocity += (constant_force / self.mass)
+	
+	#if self.linear_velocity.length() < velocity.length():
+	#	self.add_constant_force(velocity * delta * self.mass)
+	#else:
+		# clear the constant force again
+	#	self.add_constant_force(Vector3(0,0,0))
+		
+	# the self.velocity is the heading direction, update that based on the new position
+	#var pos_before = global_position
+	#var keep_y = global_position.y
+	#global_position += self.velocity * speed * delta
+	#global_position.y = 0.0 # keep_y
+	
+	# move_and_slide()
+	var motion = velocity * delta
+	# handle multiple collisions in one frame
+	for i in 5:
+		var collision = move_and_collide(motion)
+		if collision:
+			# Reflect velocity and update motion
+			motion = collision.get_remainder().bounce(collision.get_normal())
+			velocity = velocity.bounce(collision.get_normal())
+
+	#var pos_after = global_position
+	#var heading_direction = (pos_after - pos_before)
+	#if heading_direction.length() > 0:
+	#	self.velocity = heading_direction.normalized()
+
 
 
 func _create_health_bar() -> Control:
@@ -94,6 +127,9 @@ func take_damage(amount: float) -> void:
 		health_bar.scale.x = health / max_health
 	if health <= 0:
 		killed()
+		
+func apply_force(force: Vector3) -> void:
+	self.velocity += force
 
 func killed():
 	if game_manager:

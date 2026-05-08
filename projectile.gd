@@ -3,8 +3,10 @@ class_name Projectile
 
 # Projectile properties
 var damage := 25.0
+var mass := 0.01
 var speed := 100.0
 var target: Enemy = null
+var direction := Vector3(0,0,0)
 
 func _ready():
 	# Create mesh for projectile (small sphere)
@@ -21,9 +23,9 @@ func _process(delta: float):
 		queue_free()
 		return
 
-	# Move towards target
-	var direction = (target.global_position - global_position).normalized()
-	global_position += direction * speed * delta
+	# Move towards target (these are rockets?)
+	self.direction = (target.global_position - global_position).normalized()
+	global_position += self.direction * speed * delta
 
 	# Check if reached target
 	if (global_position - target.global_position).length() < 1.0:
@@ -37,6 +39,9 @@ func hit_target():
 
 	# Apply damage to target
 	target.take_damage(damage)
+	
+	# Also apply some force
+	target.apply_force(self.direction * speed * self.mass)
 
 	# Remove projectile
 	queue_free()

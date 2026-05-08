@@ -9,7 +9,7 @@ var game_state := "menu"  # menu, playing, paused, gameOver
 
 # Game entities
 var towers: Array[Node] = []
-var enemies: Array[Node3D] = []
+var enemies: Array[CharacterBody3D] = []
 var projectiles: Array[Node3D] = []
 
 # Grid system for tower placement
@@ -84,7 +84,7 @@ func start_wave(wave_num: int) -> void:
 	wave_started.emit(wave_num)
 	print("Wave ", wave_num, " started with ", enemy_count, " enemies!")
 
-func spawn_enemy() -> Node3D:
+func spawn_enemy() -> CharacterBody3D:
 	if is_wave_active and current_wave_enemy_index < wave_enemies.size():
 		var enemy_scene = preload("res://enemy.tscn")
 		var enemy = enemy_scene.instantiate()
@@ -103,8 +103,6 @@ func spawn_enemy() -> Node3D:
 		# Random direction for billiard motion
 		var angle = randf() * TAU
 		enemy.velocity = Vector3(cos(angle), 0, sin(angle)).normalized()
-		if enemy.rigid_body:
-			enemy.rigid_body.velocity = enemy.velocity
 
 		add_child(enemy)
 		enemies.append(enemy)
@@ -128,7 +126,7 @@ func _process(delta: float):
 			_wave_complete_timer = 0
 			start_wave(wave_number + 1)
 
-func remove_enemy(enemy: Node3D) -> void:
+func remove_enemy(enemy: CharacterBody3D) -> void:
 	if enemy in enemies:
 		enemies.erase(enemy)
 		if is_wave_active and current_wave_enemy_index >= wave_enemies.size() and enemies.size() == 0:
