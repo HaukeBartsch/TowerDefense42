@@ -1,0 +1,32 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="tower_defense_42"
+run/main_scene="uid://game001"
+config/features=PackedStringArray("4.5", "Forward Plus")
+config/icon="res://icon.svg"
+
+[input]
+
+place_tower={
+"deadzone": null,
+"events": [Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"button_mask":1,"position":Vector2(329, 28),"global_position":Vector2(348, 124),"factor":1.0,"button_index":1,"canceled":false,"pressed":true,"double_click":false,"script":null)
+]
+}
+
+[rendering]
+
+environment/ssao/quality=3
+environment/ssil/quality=3
+environment/subsurface_scattering/subsurface_scattering_quality=2
+environment/defaults/default_clear_color=Color(0.6789437, 0.6789437, 0.6789437, 1)
+environment/defaults/default_environment="uid://bovbf0h0xyqvk"
