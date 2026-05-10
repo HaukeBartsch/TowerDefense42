@@ -1,4 +1,4 @@
-extends Node3D
+extends StaticBody3D
 class_name Tower
 
 # Tower properties
@@ -28,7 +28,7 @@ func _ready():
 	add_child(mesh_instance)
 	self.name = "Tower"
 
-	# add a sphere 
+	# add a collision shape
 	rigid_body = CollisionShape3D.new() # RigidBody3D.new()
 	rigid_body.shape = cylinder_mesh.create_convex_shape(true, true)
 	#rigid_body.gravity_scale = 0.0

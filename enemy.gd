@@ -60,8 +60,9 @@ func _physics_process(delta):
 	# global_position += velocity * speed * delta
 	#rigid_body.scale = Vector3(20,20,20)
 
-	var min_bound = game_manager.ARENA_MIN
-	var max_bound = game_manager.ARENA_MAX
+	var borderWidth = 15
+	var min_bound = game_manager.ARENA_MIN + Vector3(borderWidth, borderWidth, borderWidth)
+	var max_bound = game_manager.ARENA_MAX - Vector3(borderWidth, borderWidth, borderWidth)
 
 	if global_position.x < min_bound.x:
 		global_position.x = min_bound.x

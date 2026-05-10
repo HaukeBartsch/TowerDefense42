@@ -2,5 +2,5 @@
 
 [ext_resource type="Script" uid="uid://ypsx30u3caw4" path="res://tower.gd" id="1_k1sas"]
 
-[node name="Tower" type="Node3D"]
+[node name="Tower" type="StaticBody3D"]
 script = ExtResource("1_k1sas")
