@@ -74,6 +74,10 @@ func _physics_process(delta):
 		global_position.z = max_bound.z
 		velocity.z = -velocity.z
 	
+	# don't allow enemies to stop
+	if delta * velocity.length() < speed:
+		velocity *= 1.0001
+	
 	var motion = velocity * delta
 	# handle multiple collisions in one frame
 	for i in 5:
