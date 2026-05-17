@@ -15,22 +15,30 @@ var rigid_body: CollisionShape3D
 
 func _ready():
 	# Create tower visual (cylinder)
-	var mesh_instance = MeshInstance3D.new()
-	var cylinder_mesh = CylinderMesh.new()
-	cylinder_mesh.top_radius = 3
-	cylinder_mesh.bottom_radius = 10.0
-	cylinder_mesh.height = 20.0
-	cylinder_mesh.radial_segments = 16
-	mesh_instance.mesh = cylinder_mesh
+	
+	
+	var tower01_scene = preload("res://Tower01.glb")
+	var model_instance = tower01_scene.instantiate()
+	var mesh_node1 = model_instance.get_node("Cylinder") as MeshInstance3D	
+	var mesh_data = mesh_node1.mesh
+	#var mesh_instance = MeshInstance3D.new()
+	#var cylinder_mesh = CylinderMesh.new()
+	#cylinder_mesh.top_radius = 3
+	#cylinder_mesh.bottom_radius = 10.0
+	#cylinder_mesh.height = 20.0
+	#cylinder_mesh.radial_segments = 16
+	#mesh_instance.mesh = cylinder_mesh
 
-	var mat = preload("res://materials/tower.tres")
-	mesh_instance.material_override = mat
-	add_child(mesh_instance)
+	#var mat = preload("res://materials/tower.tres")
+	#mesh_instance.material_override = mat
+	#add_child(mesh_instance)
+	add_child(model_instance)
 	self.name = "Tower"
 
 	# add a collision shape
 	rigid_body = CollisionShape3D.new() # RigidBody3D.new()
-	rigid_body.shape = cylinder_mesh.create_convex_shape(true, true)
+	#rigid_body.shape = cylinder_mesh.create_convex_shape(true, true)
+	rigid_body.shape = mesh_data.create_convex_shape(true, true)
 	#rigid_body.gravity_scale = 0.0
 	add_child(rigid_body)
 

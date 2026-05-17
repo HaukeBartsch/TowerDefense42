@@ -1,6 +1,9 @@
-[gd_scene load_steps=2 format=3 uid="uid://tower001"]
+[gd_scene load_steps=3 format=3 uid="uid://tower001"]
 
 [ext_resource type="Script" uid="uid://ypsx30u3caw4" path="res://tower.gd" id="1_k1sas"]
+[ext_resource type="PackedScene" uid="uid://10sq7b325xgw" path="res://Tower01.glb" id="2_vedim"]
 
 [node name="Tower" type="StaticBody3D"]
 script = ExtResource("1_k1sas")
+
+[node name="Tower01" parent="." instance=ExtResource("2_vedim")]

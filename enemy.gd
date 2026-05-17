@@ -56,10 +56,6 @@ func _physics_process(delta):
 	if not game_manager or game_manager.game_state != "playing":
 		return
 
-	# Straight-line billiard motion + reflection
-	# global_position += velocity * speed * delta
-	#rigid_body.scale = Vector3(20,20,20)
-
 	var borderWidth = 15
 	var min_bound = game_manager.ARENA_MIN + Vector3(borderWidth, borderWidth, borderWidth)
 	var max_bound = game_manager.ARENA_MAX - Vector3(borderWidth, borderWidth, borderWidth)
@@ -67,38 +63,17 @@ func _physics_process(delta):
 	if global_position.x < min_bound.x:
 		global_position.x = min_bound.x
 		velocity.x = -velocity.x
-		#self.velocity.x = -self.velocity.x
 	elif global_position.x > max_bound.x:
 		global_position.x = max_bound.x
 		velocity.x = -velocity.x
-		#self.velocity.x = -self.velocity.x
 
 	if global_position.z < min_bound.z:
 		global_position.z = min_bound.z
 		velocity.z = -velocity.z
-		#self.velocity.z = -self.velocity.z
 	elif global_position.z > max_bound.z:
 		global_position.z = max_bound.z
 		velocity.z = -velocity.z
-		#self.velocity.z = -self.velocity.z
 	
-	#if velocity.length() < self.speed:
-	#	var constant_force = velocity.normalized() * self.mass
-	#	velocity += (constant_force / self.mass)
-	
-	#if self.linear_velocity.length() < velocity.length():
-	#	self.add_constant_force(velocity * delta * self.mass)
-	#else:
-		# clear the constant force again
-	#	self.add_constant_force(Vector3(0,0,0))
-		
-	# the self.velocity is the heading direction, update that based on the new position
-	#var pos_before = global_position
-	#var keep_y = global_position.y
-	#global_position += self.velocity * speed * delta
-	#global_position.y = 0.0 # keep_y
-	
-	# move_and_slide()
 	var motion = velocity * delta
 	# handle multiple collisions in one frame
 	for i in 5:
@@ -107,12 +82,6 @@ func _physics_process(delta):
 			# Reflect velocity and update motion
 			motion = collision.get_remainder().bounce(collision.get_normal())
 			velocity = velocity.bounce(collision.get_normal())
-
-	#var pos_after = global_position
-	#var heading_direction = (pos_after - pos_before)
-	#if heading_direction.length() > 0:
-	#	self.velocity = heading_direction.normalized()
-
 
 
 func _create_health_bar() -> Control:
