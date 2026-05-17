@@ -134,6 +134,10 @@ func remove_enemy(enemy: CharacterBody3D) -> void:
 			_wave_complete_timer = 5.0
 			print("Wave complete! Starting next wave in 5 seconds...")
 
+func remove_tower(tower: StaticBody3D) -> void:
+	if tower in towers:
+		towers.erase(tower)
+
 func add_money(amount: int) -> void:
 	money += amount
 	money_changed.emit(money)

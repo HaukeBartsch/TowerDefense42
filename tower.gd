@@ -3,6 +3,7 @@ class_name Tower
 
 # Tower properties
 var damage := 25.0
+var health := 100.0
 var range_val := 80.0
 var fire_rate := 1.0
 var last_fire_time_ms := 0
@@ -14,13 +15,13 @@ var game_manager: GameManager = null
 var rigid_body: CollisionShape3D
 
 func _ready():
-	# Create tower visual (cylinder)
-	
-	
+	# Create tower visual (cylinder)	
 	var tower01_scene = preload("res://Tower01.glb")
 	var model_instance = tower01_scene.instantiate()
 	var mesh_node1 = model_instance.get_node("Cylinder") as MeshInstance3D	
 	var mesh_data = mesh_node1.mesh
+	
+	# Here a default tower in case we don't have a mesh loaded from Blender
 	#var mesh_instance = MeshInstance3D.new()
 	#var cylinder_mesh = CylinderMesh.new()
 	#cylinder_mesh.top_radius = 3
@@ -89,3 +90,15 @@ func shoot_target():
 	projectile.global_position = global_position + Vector3(0, 1.5, 0)
 
 	last_fire_time_ms = Time.get_ticks_msec()
+
+func take_damage(amount: float) -> void:
+	health -= amount
+	if health <= 0:
+		killed()
+		
+
+func killed():
+	if game_manager:
+		game_manager.remove_tower(self)
+
+	queue_free()

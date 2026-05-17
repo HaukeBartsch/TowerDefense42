@@ -82,6 +82,11 @@ func _physics_process(delta):
 			# Reflect velocity and update motion
 			motion = collision.get_remainder().bounce(collision.get_normal())
 			velocity = velocity.bounce(collision.get_normal())
+			# reduce health if one of the colliding bodies is a tower
+			# var object_one = collision.get_collider_owner() # Or collision.collider
+			var object_two = collision.get_collider()       # The object you hit
+			if object_two is Tower:
+				object_two.take_damage(25.0)
 
 
 func _create_health_bar() -> Control:
